@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block link_block %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'medusa/css/management/sceneIndex.css' %}">
+{% endblock %}
+
+{% block mainbody %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/media/index?page_no=1">场景列表</a>
+                </li>
+            </ol>
+        </div>
+        <div class="row">
+            <h2 class="sub-header">场景列表</h2>
+        </div>
+
+        <!-- 添加 -->
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-primary btn-md" type="submit" id="scene_add" data-toggle="modal"  data-target="#EditModal">添加场景</button>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="row">
+            <div class="col-md-10">
+                <div class="text-right">
+                    <div class="pagination"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                {% if paginator and paginator.totalCounts > 0 %}
+                <form class="form-inline form-page-size">
+                    <div class="form-group">
+                        每页
+                        <input class="form-control input-page-size" type="text" value="">
+                        条
+                        <button class="btn btn-default" type="submit">确定</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>场景</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for scene in scenes %}
+                    <tr>
+                        <td>{{ scene.id }}</td>
+                        <td>{{ scene.name }}</td>
+                        <td>{{ scene.ctime |date:"Y-m-d H:i:s" }}</td>
+                        <td><button class="btn btn-default btn-edit" data-id="{{ scene.id }}" data-name="{{ scene.name }}" data-toggle="modal"  data-target="#EditModal" id="scene_edit">编辑</button>
+                            <!--<button class="btn btn-sm btn-default" data-id="{{ scene.id }}" id="scene_delete">删除</button></td>-->
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<!-- Edit Modal -->
+    <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-edit">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel">场景</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="edit-app-id" type="hidden">
+                        </div>
+                        <div class="form-group" style="display:none">
+                            <label>场景ID</label>
+                            <input type="text" class="form-control" id="scene_id_edit" placeholder="" disabled="true"　readOnly="true"  />
+                        </div>
+                        <div class="form-group">
+                            <label>场景名称</label>
+                             <input type="text"  class="form-control" id="scene_name_edit" placeholder="" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                         <button type="submit" class="btn btn-default" id="scene_edit_sub">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  <!-- 保存render数据，在外部js中使用 -->
+    <script type="text/javascript">
+        var data = {
+            'paginator': {{ paginator|safe }}
+        };
+    </script>
+    <script type="text/javascript" src="{% static 'jq-paginator/js/jqPaginator.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jquery-query-object/js/jquery.query-object.js' %}"></script>
+    <script type="text/javascript" src="{% static 'medusa/js/management/sceneIndex.js' %}"></script>
+
+{% endblock %}
+

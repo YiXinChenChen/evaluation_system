@@ -1,0 +1,204 @@
+/*
+ * Globals
+ */
+
+/* Links */
+a,
+a:focus,
+a:hover {
+    color: #fff;
+}
+
+/*
+ * Base structure
+ */
+
+html,
+body {
+    height: 100%;
+    background-color: #808080;
+}
+
+body {
+    color: #fff;
+    /*text-align: center;*/
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+    font-family: "PingFang SC", "Helvetica Neue", Helvetica, "Hiragino Sans GB", "STHeitiSC-Light", "Microsoft YaHei", "å¾®è½¯é›…é»‘", Arial, sans-serif;
+}
+
+.navbar-sqa {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.presentation {
+    display: none !important;
+}
+
+.navbar-sqa h3.navbar-brand {
+    color: #fff;
+    font-size: 24px;
+}
+
+.navbar-sqa .nav-sqa {
+    float: right !important;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.navbar-sqa .nav-sqa > li {
+    display: inline-block;
+}
+
+.navbar-sqa .nav-sqa > li + li {
+    margin-left: 20px;
+}
+
+.navbar-sqa .nav-sqa > li > a {
+    padding-right: 0;
+    padding-left: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff; /* IE8 proofing */
+    color: rgba(255, 255, 255, .75);
+    border-bottom: 2px solid transparent;
+    background-color: transparent;
+}
+
+.navbar-sqa .nav-sqa > li > a:hover,
+.navbar-sqa .nav-sqa > li > a:focus {
+    border-bottom-color: #a9a9a9;
+    border-bottom-color: rgba(255, 255, 255, .25);
+}
+
+.navbar-sqa .nav-sqa > .active > a,
+.navbar-sqa .nav-sqa > .active > a:hover,
+.navbar-sqa .nav-sqa > .active > a:focus {
+    color: #fff;
+    border-bottom-color: #fff;
+    background-color: transparent;
+}
+
+.body-sqa {
+    min-height: 700px;
+}
+
+.footer-sqa {
+    margin: 10px;
+}
+
+.center-wrapper {
+    text-align: center;
+}
+
+.welcome-container {
+    margin-top: 100px;
+}
+
+.text-highlight {
+    color: #99FFFF;
+}
+
+/* for presentation */
+
+.spCon {
+    margin-top: 100px;
+    width: 1000px;
+}
+
+@media (max-device-height: 800px) {
+    .spCon {
+        margin-top: 10px;
+    }
+}
+
+.spCon .bLeft {
+    float: left;
+    width: 405px;
+}
+
+.spCon .bMid {
+    float: left;
+    width: 142px;
+    text-align: center;
+}
+
+.bMid .label-vs {
+    font-size: 48px;
+    margin-top: 205px;
+    color: #fff;
+}
+
+.bMid .label-progress {
+    font-size: 24px;
+    color: #99FFFF;
+}
+
+.spCon .bRight {
+    float: left;
+    width: 405px;
+}
+
+.test-obj-container {
+    width: 405px;
+    min-height: 24px;
+}
+
+.img-test-obj {
+    width: 405px;
+}
+
+.loading-test-obj {
+    position: absolute;
+    background:url('/assets/sqa/image/loading.gif') no-repeat center center #808080;
+    width: 64px;
+    height: 64px;
+    z-index: 1024;
+}
+
+#form-vote {
+    margin-bottom: 50px;
+}
+
+@media (max-device-height: 801px) {
+    #form-vote {
+        margin-bottom: 25px;
+    }
+}
+
+.tips-lg {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-size: 24px;
+    text-align: center;
+}
+
+@media (max-device-height: 801px) {
+    .tips-lg {
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+}
+
+/*.btn-vote input[type=radio] {*/
+    /*position: absolute;*/
+    /*clip: rect(0, 0, 0, 0);*/
+    /*pointer-events: none;*/
+/*}*/
+
+.toolbar-presentation {
+    padding: 10px 0px;
+    width: 100%;
+    min-height: 66px;
+    background-color: #808080;
+}
+
+.vote-container {
+    margin-top: 50px;
+}
+
+#form-user-info .alert {
+    margin-bottom: 0px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}

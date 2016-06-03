@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block link_block %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'medusa/css/management/suiteIndex.css' %}">
+     <link rel="stylesheet" href="{% static 'medusa/css/management/addSuiteGroup.css' %}">
+    {% load parse_suite_status %}
+{% endblock %}
+
+{% block mainbody %}
+    <!--面包屑-->
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/management/index?page_no=1">任务列表</a>
+                </li>
+                <li>
+                    <a href="/management/suite_group_index?suite_id={{ suite_id }}">小组列表</a>
+                </li>
+            </ol>
+        </div>
+        <div class="row">
+            <h2 class="sub-header">小组列表</h2>
+        </div>
+
+        <!-- filter -->
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline form-filter">
+                    <div class="form-group">
+                        <label for="groupName">小组名称：</label>
+                        <input id="groupName"  type="text" placeholder="小组名称" class="form-control" value="{{ group_name|default_if_none:'' }}"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default btn-search"
+                                type="submit">搜索
+                        </button>
+                    </div>
+                    <div class="form-group pull-right">
+                        <button class="btn btn-primary btn-add-suite-group"
+                                data-toggle="modal" data-target="#addGroupModal"
+                                data-id="{{ suite_id }}"
+                                type="button">添加小组
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="row">
+            <div class="col-md-10">
+                <div class="text-right">
+                    <div class="pagination"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                {% if paginator and paginator.totalCounts > 0 %}
+                    <form class="form-inline form-page-size">
+                        <div class="form-group">
+                            每页
+                            <input class="form-control input-page-size"
+                                   type="text" value="">
+                            条
+                            <button class="btn btn-default" type="submit">确定
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="groupList">
+            <div class="groupList-header">
+                <div class="row">
+                    <span class="col-md-1">ID</span>
+                    <span class="col-md-1">名称</span>
+                    <span class="col-md-2">创建时间</span>
+                    <span class="col-md-2">修改时间</span>
+                    <span class="col-md-4">操作</span>
+                </div>
+            </div>
+            <div class="groupList-body col-md-12">
+                {% for group in groups %}
+                    <div class="row group-row">
+                        <div class="row group-header">
+                            <p class="col-md-1">{{ group.id }}</p>
+                            <p class="col-md-1 auto-wrap" id="group_{{ group.id }}_groupName">{{ group.name }}</p>
+                            <p class="col-md-2 auto-wrap">{{ group.ctime|date:"Y-m-d H:i:s" }}</p>
+                            <p class="col-md-2 auto-wrap">{{ group.mtime|date:"Y-m-d H:i:s" }}</p>
+                            <p class="col-md-4">
+                                <button class="btn btm-add btn-default " data-id="{{ group.id }}">添加Case</button>
+                                <button class="btn btm-edit btn-default" data-toggle="modal" data-target="#editGroupModal" data-id="{{ group.id }}" type="button">编辑</button>
+                                <button class="btn btm-delete btn-danger" data-id="{{ group.id }}">删除</button>
+                                <button type="button" class="btn btn-default
+                                collapsed btn-collapse"
+                                        data-expanded-text="收起"
+                                        data-collapsed-text="查看"
+                                        data-toggle="collapse"
+                                        data-target="#group{{ group.id }}" aria-expanded="false" aria-controls="group{{ group.id }}">查看Case</button>
+                            </p>
+                        </div>
+                        {% if cases|get_cases:group.id %}
+                        <div class="case collapse " id="group{{ group.id }}">
+                            <ul class="list-group">
+                                {% for case in cases|get_cases:group.id %}
+                                        <li class="list-group-item">
+                                            {{ case.id }}
+                                            <a class="btn btn-default
+                                            btn-case btn-review pull-right" href="/management/case_view?case_id={{ case.id }}" target="_Blank">查看</a>
+                                            <button class="btn btn-default
+                                            btn-case btn-edit-case pull-right" data-id="{{ case.id }}">编辑</button>
+                                            <button class="btn btn-case
+                                            btn-danger btn-delete-case pull-right" data-id="{{ case.id }}">删除</button>
+                                        </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+         <!-- 添加小组弹出框 -->
+        <div class="modal fade" id="addGroupModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">添加小组</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>小组名称</label>
+                            <input type="text" class="form-control"
+                                   id="add_group_name"
+                                   placeholder="小组名称">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary
+                        btn-save-add" data-id="">添加
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 编辑弹出框 -->
+        <div class="modal fade" id="editGroupModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">修改小组名称</h4>
+                    </div>
+                    <div class="modal-body">
+                         <div class="form-group">
+                            <input id="edit_group_id" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label>小组名称</label>
+                            <input type="text" class="form-control"
+                                   id="edit_group_name"
+                                   placeholder="小组名称">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary
+                        btn-save-edit" data-id="">保存
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 添加Case弹出框 -->
+        <div class="modal fade" id="addCaseModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">添加Case</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Case名称</label>
+                            <input type="text" class="form-control"
+                                   id="case_name"
+                                   placeholder="Case名称">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary
+                        btn-save-case" data-id="">添加
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+        <!-- 保存render数据，在外部js中使用 -->
+        <script type="text/javascript">
+            var data = {
+                'paginator': {{ paginator|safe }},
+                'suite_id': {{ suite_id }},
+                'disable_cud': {{ disable_cud }}
+            };
+        </script>
+        <script type="text/javascript" src="{% static 'jq-paginator/js/jqPaginator.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'jquery-query-object/js/jquery.query-object.js' %}"></script>
+        <script type="text/javascript" src="{% static 'medusa/js/management/addSuiteGroup.js' %}"></script>
+
+{% endblock %}

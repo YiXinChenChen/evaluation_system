@@ -1,0 +1,49 @@
+{% extends "sqa_base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+{% endblock %}
+
+{% block headerjs %}
+{% endblock %}
+
+{% block mainbody %}
+    <div class="container">
+        <div class="center-wrapper">
+            <h1 class="cover-heading">评测流程</h1>
+            <br/>
+
+            <p class="lead" align="left" style="padding-left:190px;">
+                1. 总共需要完成 <span class="text-highlight">{{ suite.case_count }}</span> 轮评测，每轮有 <span class="text-highlight">{{ suite.case_obj_count }}</span> 张图片。
+            </p>
+
+            <p class="lead" align="left" style="padding-left:190px;">
+                2. 每轮图片观看至少5秒。
+            </p>
+
+            <p class="lead" align="left" style="padding-left:190px;">
+                3. 观看完{{ suite.case_obj_count }}张图片后，您需要给出评价：<span class="text-highlight">这{{ suite.case_obj_count }}张图片，哪张图片更好？</span><br/>
+                &nbsp&nbspA. <span class="text-highlight">左图更好</span><br/>
+                &nbsp&nbspB. <span class="text-highlight">差不多</span><br/>
+                &nbsp&nbspC. <span class="text-highlight">右图更好</span>
+            </p>
+
+            <p class="lead" align="left" style="padding-left:190px;">
+                4. 选择后，点击“提交”按钮。
+            </p>
+            <br/>
+
+            <p class="lead">
+                <input id="input-suite-uuid" type="hidden" name="suite_uuid" value="{{ suite.uuid|safe }}" />
+                <button class="btn btn-lg btn-success btn-start-test">开&nbsp始&nbsp评&nbsp测</button>
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bodyjs %}
+<script src="{% static 'jquery-query-object/js/jquery.query-object.js' %}" ></script>
+<script src="{% static 'jquery-cookie/js/jquery.cookie.js' %}"></script>
+<script src="{% static 'sqa/js/intro.js' %} "></script>
+{% endblock %}

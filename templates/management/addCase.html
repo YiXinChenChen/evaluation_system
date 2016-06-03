@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block link_block %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'medusa/css/management/suiteIndex.css' %}">
+{% endblock %}
+
+{% block mainbody %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/management/index?page_no=1">任务列表</a>
+                </li>
+                <li>
+                    <a href="/management/suite_group_index?suite_id={{ suite_id }}">分组列表</a>
+                </li>
+                <li>
+                    <a href="/management/add_case_index?suite_id={{ suite_id }}&case_id={{ case_id }}&is_edit={{ is_edit }}">测试用例</a>
+                </li>
+            </ol>
+        </div>
+        <div class="row">
+            {% if is_edit == 'true' %}
+                <h2 class="sub-header">编辑测试用例</h2>
+            {% else %}
+                <h2 class="sub-header">添加测试用例</h2>
+            {% endif %}
+        </div>
+
+
+
+        <!-- 列表 -->
+        <div class="table-responsive top-block" data-spy="scroll">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>应用</th>
+                    <th>场景</th>
+                    <th>类型</th>
+                    <th>标签</th>
+                    <th>图片路径</th>
+                    <th>创建时间</th>
+                    <th>顺序</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for test_object in added_objs %}
+                    <tr>
+                        <td>{{ test_object.id }}</td>
+                        <td>{{ test_object.app }}</td>
+                        <td>{{ test_object.scene }}</td>
+                        <td>{{ test_object.type }}</td>
+                        <td>{{ test_object.tag }}</td>
+                        <td>
+                            <span {% if test_object.type == 'image' %}class="show-img" {% endif %} data-path="{{ test_object.path }}" >{{ test_object.path}}</span>
+                        </td>
+                        <td>{{ test_object.ctime|date:"Y-m-d H:i:s" }}</td>
+                        <td> <input type="text" class="form-control input-sm " id="name" placeholder="" value="{{ test_object.order}} " autocomplete="off" style="width: 30%"></td>
+                        <td>
+                            <button class="btn btm-order-sub btn-default" data-id="{{ test_object.c_o_id }}" >提交</button>
+                            <button class="btn btm-delete btn-default" data-id="{{ test_object.id }}">删除</button>
+                            <button class="btn btm-source btn-default" data-id="{{ test_object.id }}" data-path="{{ test_object.path }}">原图</button>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar" style="width: 100%;height: 20%">
+          </div>
+        </div>
+
+        <!-- filter -->
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline form-filter">
+                    <div class="form-group">
+                        <label for="appName" >应用: </label>
+                        <select class="form-control" id="appName" >
+                            {% if app_name == '' %}
+                                <option selected value="">All</option>
+                            {% else %}
+                                 <option value="">All</option>
+                            {% endif %}
+                            {% for app in apps  %}
+                                {% if app.name == app_name %}
+                                    <option selected value="
+                                    {{ app.name }}">{{ app.name }}</option>
+                                {% else %}
+                                     <option value="{{ app.name }}">{{ app.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sceneName" >场景: </label>
+                        <select class="form-control" id="sceneName" value="">
+                            {% if scene_name == '' %}
+                                <option selected value="">All</option>
+                            {% else %}
+                                 <option value="">All</option>
+                            {% endif %}
+                            {% for scene in scenes  %}
+                                {% if scene.name == scene_name %}
+                                    <option selected value="
+                                    {{ scene.name }}">{{ scene.name }}</option>
+                                {% else %}
+                                     <option value="{{ scene.name }}">{{ scene.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tagVal">标签：</label>
+                        <input id="tagVal" name="tag_val" type="text" placeholder="标签名称" class="form-control" value="{{ tag_val|default_if_none:''  }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="filePath">图片路径：</label>
+                        <input id="filePath" name="file_path" type="text" placeholder="图片路径" class="form-control" value="{{ file_path|default_if_none:''  }}"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default btn-search" type="submit">搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="row">
+            <div class="col-md-10">
+                <div class="text-right">
+                    <div class="pagination"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                {% if paginator and paginator.totalCounts > 0 %}
+                    <form class="form-inline form-page-size">
+                        <div class="form-group">
+                            每页
+                            <input class="form-control input-page-size" type="text" value="">
+                            条
+                            <button class="btn btn-default" type="submit">确定</button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+
+
+        <!-- 列表 -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>应用</th>
+                    <th>场景</th>
+                    <th>类型</th>
+                    <th>标签</th>
+                    <th>图片路径</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for test_object in none_added_objs %}
+                    <tr>
+                        <td>{{ test_object.id }}</td>
+                        <td>{{ test_object.app }}</td>
+                        <td>{{ test_object.scene }}</td>
+                        <td>{{ test_object.type }}</td>
+                        <td>{{ test_object.tag }}</td>
+                        <td>
+                            <span  {% if test_object.type == 'image' %}class="show-img" {% endif %} data-path="{{ test_object.path }}" >{{ test_object.path}}</span>
+                        </td>
+                        <td>{{ test_object.ctime|date:"Y-m-d H:i:s" }}</td>
+                        <td>
+                            <button class="btn btm-add btn-default" data-id="{{ test_object.id }}">添加</button>
+                            <button class="btn btm-source btn-default" data-id="{{ test_object.id }}" data-path="{{ test_object.path }}">源图</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-edit">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="modalLabel">编辑</h4>
+                    </div>
+                    <div class="modal-body" id="pic_order">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="case_obj_id" value="" style="display:none"  />
+                            <label>图片顺序</label>
+                            <input type="text" class="form-control" id="pic_order_num" placeholder=""   />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                         <button type="button" class="btn btn-default" id="case_obj_sub">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保存render数据，在外部js中使用 -->
+    <script type="text/javascript">
+        var data = {
+            'paginator': {{ paginator|safe }},
+            'case_id': {{ case_id }},
+            'suite_id': {{ suite_id }},
+            'disable_cud': {{ disable_cud }}
+        };
+    </script>
+    <script type="text/javascript" src="{% static 'jq-paginator/js/jqPaginator.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jquery-query-object/js/jquery.query-object.js' %}"></script>
+    <script type="text/javascript" src="{% static 'medusa/js/management/addCase.js' %}"></script>
+
+{% endblock %}

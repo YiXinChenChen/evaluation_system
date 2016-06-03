@@ -1,0 +1,45 @@
+.pagination {
+    margin: 0 0;
+}
+
+.input-page-size {
+    max-width: 55px;
+}
+
+.btn-margin-left{
+    margin-left: 25px;
+}
+
+.btn-add-suite-group {
+    margin-bottom: 5px;
+}
+
+.jobList-header {
+    margin-bottom: 30px;
+}
+
+.jobList-header > div > span {
+    font-weight: bold;
+}
+
+/* suiteGroupList列表 */
+.group-row {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: none;
+
+    padding: 5px;
+}
+
+.group-row:nth-child(odd) {
+    background: #f9f9f9;
+}
+
+.group-header{
+    padding-top: 15px;
+}
+
+.group-body {
+        padding: 0 20px 20px 20px;
+}

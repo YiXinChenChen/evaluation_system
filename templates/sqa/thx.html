@@ -1,0 +1,32 @@
+{% extends "sqa_base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+{% endblock %}
+
+
+{% block mainbody %}
+
+    <div class="container">
+        <div class="center-wrapper welcome-container">
+            <h1 class="cover-heading">感谢您参与评测！</h1>
+            <p class="lead">在活动结束后，我们将进行抽奖。若获奖，我们将有专人与您联系！再次感谢您的参与！</p>
+            <p class="lead"><span class="text-highlight">转发此链接邀请更多好友参与赢惊喜奖励，具体奖励详见活动公告。</span></p>
+            <div class="col-md-8 col-md-offset-2">
+                <div class='input-group'>
+                    <input type='text' class='form-control' readonly='readonly' value="{{ invitation_url }}" id="recom_url" />
+                    <span class='input-group-addon btn' id="copy">复制</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block bodyjs %}
+    <script src="{% static 'sqa/js/ZeroClipboard.js' %} "></script>
+    <script src="{% static 'sqa/js/thx.js' %} "></script>
+    <script language="JavaScript">
+         ZeroClipboard.setMoviePath( "{% static 'sqa/js/ZeroClipboard.swf' %}" )
+    </script>
+{% endblock %}

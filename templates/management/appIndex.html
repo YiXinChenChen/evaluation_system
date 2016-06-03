@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block link_block %}
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'medusa/css/management/appIndex.css' %}">
+{% endblock %}
+
+{% block mainbody %}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li>
+                <a href="/media/index?page_no=1">应用列表</a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <h2 class="sub-header">应用列表</h2>
+    </div>
+
+    <!-- head -->
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary btn-add" type="button"
+            data-toggle="modal" data-target="#add-modal">添加</button>
+            <!--<form class="form-inline form-add">-->
+                <!--<div class="form-group">-->
+                    <!--<label for="app_name">英文名称</label>-->
+                    <!--<input id="app_name" name="app_name" type="text" class="form-control mg-left-15"/>-->
+                <!--</div>-->
+                <!--<div class="form-group mg-left-20">-->
+                    <!--<label for="app_display_name">中文名称</label>-->
+                    <!--<input id="app_display_name" name="app_display_name" type="text" class="form-control mg-left-15"/>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<button class="btn btn-primary" type="submit">添加</button>-->
+                <!--</div>-->
+            <!--</form>-->
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <div class="row">
+        <div class="col-md-10">
+            <div class="text-right">
+                <div class="pagination"></div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            {% if paginator and paginator.totalCounts > 0 %}
+            <form class="form-inline form-page-size">
+                <div class="form-group">
+                    每页
+                    <input class="form-control input-page-size" type="text" value="">
+                    条
+                    <button class="btn btn-default" type="submit">确定</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 列表 -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>英文名称</th>
+                <th>中文名称</th>
+                <th>创建时间</th>
+                <!--<th>修改时间</th>-->
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for app in apps %}
+            <tr>
+                <td>{{ app.id }}</td>
+                <td id="app-{{ app.id }}-name">{{ app.name }}</td>
+                <td id="app-{{ app.id }}-display-name">{{ app.display_name }}</td>
+                <td id="app-{{ app.id }}-ctime">{{ app.ctime|date:"Y-m-d H:i:s" }}</td>
+                <!--<td id="app-{{ app.id }}-mtime">{{ app.mtime|date:"Y-m-d H:i:s" }}</td>-->
+                <td>
+                    <button class="btn btn-default btn-edit" data-id="{{ app.id }}"
+                            data-toggle="modal" data-target="#edit-modal">编辑
+                    </button>
+                    <!--<button class="btn btn-danger btn-delete" data-id="{{ app.id }}">删除</button>-->
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-edit">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">编辑</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="edit-app-id" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label>英文名称</label>
+                            <input id="edit-app-name" name="app-name" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>中文名称</label>
+                            <input id="edit-app-display-name" name="app-display-name" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-edit">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-add">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addModalLabel">添加</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="add-app-id" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label>英文名称</label>
+                            <input id="add-app-name" name="app-name" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>中文名称</label>
+                            <input id="add-app-display-name" name="app-display-name" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">添加</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 保存render数据，在外部js中使用 -->
+<script type="text/javascript">
+    var data = {
+        'paginator': {{ paginator|safe }}
+    };
+</script>
+<script type="text/javascript" src="{% static 'jq-paginator/js/jqPaginator.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery-query-object/js/jquery.query-object.js' %}"></script>
+<script type="text/javascript" src="{% static 'medusa/js/management/appIndex.js' %}"></script>
+
+{% endblock %}

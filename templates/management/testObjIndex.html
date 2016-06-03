@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block link_block %}
+    {% load staticfiles %}
+    {% load parse_testobj %}
+    <link rel="stylesheet" href="{% static 'medusa/css/management/sceneIndex.css' %}">
+    <link rel="stylesheet" href="{% static 'medusa/css/management/webuploader.css' %}">
+    <link rel="stylesheet" href="{% static 'medusa/css/management/testobj.css' %}">
+
+{% endblock %}
+
+{% block mainbody %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/media/index?page_no=1">测试对象</a>
+                </li>
+            </ol>
+        </div>
+        <div class="row">
+            <h2 class="sub-header">测试对象</h2>
+        </div>
+
+        <!-- filter -->
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline form-filter">
+                    <div class="form-group">
+                        <label for="tag">标签</label>
+                        <input id="tag" name="tag" type="text"
+                               class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">搜索</button>
+                    </div>
+                      <div class="form-group">
+                        <button class="btn btn-primary" type="button"  data-toggle="modal"  data-target="#AddModal" id="app_add">新建对象</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="row">
+            <div class="col-md-10">
+                <div class="text-right">
+                    <div class="pagination"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                {% if paginator and paginator.totalCounts > 0 %}
+                    <form class="form-inline form-page-size">
+                        <div class="form-group">
+                            每页
+                            <input class="form-control input-page-size" type="text" value="">
+                            条
+                            <button class="btn btn-default" type="submit">确定</button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>关联App</th>
+                    <th>关联场景</th>
+                    <th>路径</th>
+                    <th>类型</th>
+                    <th>标签</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in test_objs %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td>
+                            {{ obj.app_id|parse_testobj_app:appMap }}
+                        </td>
+                        <td>
+                            {{ obj.scene_id|parse_testobj_scene:sceneMap }}
+{#                            {{ obj.scene_id }}#}
+                        </td>
+                        <td>
+                            <span {% if obj.type == 'image' %}class="show-img" {% endif %} data-id="{{ obj.id }}" data-path="{{ obj.path }}">{{ obj.path }}</span>
+                        </td>
+                        <td>
+                            {{ obj.type|parse_testobj_type }}
+                        </td>
+                        <td>{{ obj.tag }}</td>
+                        <td>{{ obj.ctime|date:"Y-m-d H:i:s" }}</td>
+                        <td>
+                            {% if obj.is_locked == 0 %}
+                                <button class="btn btn-default btn-edit to_edit test_obj_edit" obj_id="{{ obj.id }}"
+                                        data-toggle="modal"  data-target="#EditModal" data-tag="{{ obj.tag }}">编辑</button>
+                                {% if obj.is_locked == 0 %}
+                                <button class="btn btn-danger btn-disable" obj_id="{{ obj.id }}">禁用</button>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <form class="form-edit">
+                    <div class="modal-header">
+                        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+                                <!--aria-hidden="true">&times;</span></button>-->
+                        <h4 class="modal-title" id="modalLabel">测试对象</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="edit-app-id" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label>应用名称</label>
+                           <select id="app_sel_sub" class="form-control">
+
+                           </select>
+                        </div>
+                        <div class="form-group">
+                            <label>场景名称</label>
+                            <select id="scene_sel_sub" class="form-control">
+
+                              </select>
+                        </div>
+{#                         <div class="form-group">#}
+{#                            <label>类型</label>#}
+{#                            <select id="type_sub"  class="form-control">#}
+{#                                 <option>image</option>#}
+{#                                 <option>video</option>#}
+{#                            </select>#}
+{#                        </div>#}
+                        <div  class="form-group">
+                            <label>标签</label>
+                             <input type="text"  id="test_obj_tag_sub" class="form-control " placeholder="" />
+                        </div>
+                        <div class="form-group">
+                            <label>上传图片</label>
+                            <div id="uploader" class="wu-example">
+                                <div class="queueList">
+                                    <div id="dndArea" class="placeholder">
+                                        <div id="filePicker"></div>
+                                    </div>
+                                </div>
+                                <div class="statusBar" style="display:none;">
+                                    <div class="progress">
+                                        <span class="text">0%</span>
+                                        <span class="percentage"></span>
+                                    </div><div class="info"></div>
+                                    <div class="btns">
+                                        <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" class="btn btn-default testObj_sub_close" data-dismiss="modal" >关闭</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+     <!--   Edit Modal   -->
+     <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-edit">
+                    <div class="modal-header">
+                        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span-->
+                                <!--aria-hidden="true">&times;</span></button>-->
+                        <h4 class="modal-title" >测试对象</h4>
+                        <input type="text"  id="id_hider" class="form-control " style="display:none" />
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input  type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label>应用名称</label>
+                           <select  class="form-control" id="app_sel_edit">
+
+                           </select>
+                        </div>
+                        <div class="form-group">
+                            <label>场景名称</label>
+                            <select class="form-control " id="scene_sel_edit">
+
+                              </select>
+                        </div>
+                        <div  class="form-group">
+                            <label>标签</label>
+                             <input type="text" id="test_obj_tag_edit" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" class="btn btn-default testObj_sub_close" data-dismiss="modal" >关闭</button>
+                        <button type="button" class="btn btn-default "  id="test_obj_sub" >提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 保存render数据，在外部js中使用 -->
+    <script type="text/javascript">
+        var data = {
+            'paginator': {{ paginator|safe }}
+        };
+    </script>
+    <script type="text/javascript" src="{% static 'jq-paginator/js/jqPaginator.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jquery-query-object/js/jquery.query-object.js' %}"></script>
+    <script type="text/javascript" src="{% static 'medusa/js/management/webuploader.js' %}"></script>
+    <script type="text/javascript" src="{% static 'medusa/js/management/upload.js' %}"></script>
+    <script type="text/javascript" src="{% static 'medusa/js/management/testObjs.js' %}"></script>
+
+
+
+{% endblock %}

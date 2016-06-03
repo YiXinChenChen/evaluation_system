@@ -1,0 +1,42 @@
+.dl-debug {
+    font-size: 18px;
+}
+
+.test-screen {
+    display: block;
+    background-color: grey;
+    text-align: center;
+    font-size: 18px;
+    padding: 10px 0;
+}
+
+.test-screen-small {
+    background-color: grey;
+}
+
+.test-screen-small .glyphicon {
+    display: none;
+}
+
+.test-screen-middle {
+    background-color: green;
+}
+
+
+@media (max-device-height: 800px) {
+    .test-screen-small {
+        background-color: green;
+    }
+
+    .test-screen-small .glyphicon {
+        display: inline;
+    }
+
+    .test-screen-middle {
+        background-color: grey;
+    }
+
+    .test-screen-middle .glyphicon {
+        display: none;
+    }
+}

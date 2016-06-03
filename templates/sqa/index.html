@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load staticfiles %}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>研发管理部-图片质量主观评测系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'medusa/css/dashboard.css' %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'ie/js/ie10-viewport-bug-workaround.js' %}"></script>
+
+    <!-- 由于django模板继承机制的问题，base页面需把这两行放在head里 -->
+    <script src="{% static 'jquery/js/jquery-1.12.2.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- 自定义样式 -->
+    <link href="{% static 'sqa/css/index.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- Topbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/sqa/index">研发管理部-主观评测系统</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Content -->
+<div class="top">
+  <div class="banner pretty" style="background: url({% static 'sqa/image/banner.jpg' %}) no-repeat center center;"></div>
+  <div class="cont">
+    <h3 class="cont-tl">您身边的测试专家</h3>
+    <p class="cont-para">XXX为开发者提供随叫随到的一站式测试服务，和您一起打造更高品质的YYY</p>
+  </div>
+  <i class="move-down"></i>
+</div>
+
+<script src="{% static 'sqa/js/nav.js' %}"></script>
+
+</body>
+
+</html>

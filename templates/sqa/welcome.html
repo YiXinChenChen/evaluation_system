@@ -1,0 +1,26 @@
+{% extends "sqa_base.html" %}
+
+{% block css %}
+{% endblock %}
+
+{% block headerjs %}
+{% endblock %}
+
+{% block mainbody %}
+
+    <div class="container">
+        <div class="center-wrapper welcome-container">
+            <h1 class="cover-heading">图像评测活动</h1>
+            <p class="lead">（活动时间：{{ suite.start_date | date:'Y年m月d日' }} ~ {{ suite.end_date | date:'Y年m月d日' }}）</p>
+            <p class="lead">感谢你百忙当中抽空参与本次活动，凡参加本次活动，即有机会获神秘奖品一份。</p>
+            <br/><br/>
+            <p class="lead">
+                <a href="{{ qrconnect_url | safe }}" class="btn btn-lg btn-success">马&nbsp上&nbsp参&nbsp与</a>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block bodyjs %}
+{% endblock %}

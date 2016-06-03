@@ -1,0 +1,35 @@
+{% extends "sqa_base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+{% endblock %}
+
+{% block headerjs %}
+{% endblock %}
+
+{% block mainbody %}
+    <div class="container-fluid">
+
+        <div class="spCon center-block clearfix" >
+            <h1>{{ msg }}</h1>
+            <br>
+            <div class="bLeft" style="display: {{ statu }}">
+                <div class="test-obj-container clearfix">
+                    <img alt="左图" class="img-test-obj center-block" src="{% static test_objs.0.path|safe %}" />
+                </div>
+            </div>
+            <div class="bMid" style="display: {{ statu }}">
+                <p class="label-vs">VS</p>
+            </div>
+            <div class="bRight" style="display: {{ statu }}">
+                <div class="test-obj-container clearfix">
+                    <img alt="右图" class="img-test-obj center-block" src="{% static test_objs.1.path|safe %}" />
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bodyjs %}
+{% endblock %}

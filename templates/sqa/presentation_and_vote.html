@@ -1,0 +1,60 @@
+{% extends "sqa_base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+{% endblock %}
+
+{% block headerjs %}
+{% endblock %}
+
+{% block mainbody %}
+    <div class="container-fluid">
+        <div class="spCon center-block clearfix">
+            <div class="bLeft">
+                <div class="test-obj-container clearfix">
+                    <img alt="左图" class="img-test-obj center-block" data-src="{% static test_objs.0.path|safe %}" />
+                </div>
+            </div>
+            <div class="bMid">
+                <p class="label-vs">VS</p>
+                <p class="label-progress">{{ case_index }}/{{ case_count }}</p>
+            </div>
+            <div class="bRight">
+                <div class="test-obj-container clearfix">
+                    <img alt="右图" class="img-test-obj center-block" data-src="{% static test_objs.1.path|safe %}" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tips-lg">
+                    <label class="center-block">请先观看图片 <span id="clock-text" class="text-highlight">5秒</span> ，再选择你觉得 <span>图片质量</span> 比较好的一张</label>
+                </div>
+            </div>
+        </div>
+        <form id="form-vote" method="POST" action="/sqa/{{ suite_uuid }}/vote">
+            {% csrf_token %}
+            <input type="hidden" name="case_id" value="{{ case_id }}" autocomplete="off" />
+            <input type="hidden" name="vote" id="input-vote" value="" autocomplete="off" />
+            <div class="row">
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-block btn-lg btn-primary btn-vote" data-value="1" disabled>左图更好</button>
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-block btn-lg btn-primary btn-vote" data-value="2" disabled>差不多</button>
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-block btn-lg btn-primary btn-vote" data-value="3" disabled>右图更好</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block bodyjs %}
+<script src="{% static 'jquery-cookie/js/jquery.cookie.js' %}"></script>
+<script src="{% static 'sqa/js/presentation_and_vote.js' %}"></script>
+{% endblock %}

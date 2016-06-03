@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block link_block %}
+    {% load staticfiles %}
+    {% load parse_suite_status %}
+    <link rel="stylesheet" href="{% static 'medusa/css/management/suiteIndex.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+{% endblock %}
+
+{% block mainbody %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="row">
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/management/suite_index?page_no=1">任务列表</a>
+                </li>
+            </ol>
+        </div>
+        <div class="row">
+            <h2 class="sub-header">任务列表 </h2>
+        </div>
+
+        <!-- filter -->
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline form-filter">
+                    <div class="form-group">
+                        <label for="suitename">任务名称：</label>
+                        <input id="suiteName" name="file_path" type="text"
+                               placeholder="任务名称" class="form-control"
+                               value="{{ suite_name|default_if_none:'' }}"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default btn-search"
+                                type="submit">搜索
+                        </button>
+                        <button class="btn btn-primary btn-add-suite btn-margin-left" data-toggle="modal"
+                                type="button" data-target="#add-modal">添加任务
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="row">
+            <div class="col-md-10">
+                <div class="text-right">
+                    <div class="pagination"></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                {% if paginator and paginator.totalCounts > 0 %}
+                    <form class="form-inline form-page-size">
+                        <div class="form-group">
+                            每页
+                            <input class="form-control input-page-size"
+                                   type="text" value="">
+                            条
+                            <button class="btn btn-default" type="submit">确定
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>分割类型</th>
+                    <th>测试对象数</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>修改时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for suite in suites %}
+                    <tr>
+                        <td>{{ suite.id }}</td>
+                        <td id="suite-{{ suite.id }}-name">{{ suite.name }}</td>
+                        <td id="suite-{{ suite.id }}-split-type" data-type="{{ suite.split_type }}">{{ suite.split_type|parse_suite_type }}</td>
+                        <td id="suite-{{ suite.id }}-case-obj-count">{{ suite.case_obj_count }}</td>
+                        <td id="suite-{{ suite.id }}-status">{{ suite.status|parse_suite_status }}</td>
+                        <td>{{ suite.ctime|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ suite.mtime|date:"Y-m-d H:i:s" }}</td>
+                        <td>
+                            {% if suite.status == 'ready' %}
+                            <button class="btn btm-start btn-success" data-id="{{ suite.id }}">开始</button>
+                            {% endif %}
+                            {% if suite.status == 'testing' %}
+                            <button class="btn btm-finish btn-danger" data-id="{{ suite.id }}">结束</button>
+                            {% endif %}
+                            <button class="btn btm-check btn-default" data-uuid="{{ suite.uuid }}"  data-toggle="modal" type="button" data-target="#view-modal">查看</button>
+                            {% if suite.status == 'ready' %}
+                            <button class="btn btm-edit btn-default" data-id="{{ suite.id }}" data-toggle="modal" type="button" data-target="#edit-modal">任务编辑</button>
+                            {% endif %}
+
+                            {% if suite.status == 'ready' %}
+                            <button class="btn btm-group btn-default" data-id="{{ suite.id }}">Case管理</button>
+                            {% else %}
+                            <button class="btn btm-group btn-default" data-id="{{ suite.id }}">查看明细</button>
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--编辑弹出框-->
+    <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-edit">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">编辑</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="edit-suite-id" type="hidden">
+                        </div>
+                        <div class="form-group">
+                            <label >任务名称</label>
+                            <input type="text" class="form-control" id="edit-suite-name" placeholder="任务名称">
+                        </div>
+                        <div class="form-group">
+                            <label >分割类型</label>
+                            <select class="form-control" id="edit-suite-split-type">
+                                    <option value="manually">手动分组</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label >测试用例数目</label>
+                            <input type="number" class="form-control" id="edit-suite-case-obj-count" placeholder="测试用例数目">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-edit">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <form class="form-add">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addModalLabel">添加</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label >任务名称</label>
+                            <input type="text" class="form-control" id="add-suite-name" placeholder="任务名称">
+                        </div>
+                        <div class="form-group">
+                            <label >分割类型</label>
+                            <select class="form-control" id="add-suite-split-type" >
+                                <option selected value="manually">手动分组</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label >测试用例数目</label>
+                            <input type="number" class="form-control" id="add-suite-case-obj-count" placeholder="测试用例数目" value="2">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">添加任务</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Model -->
+     <div class="modal fade" id="view-modal" tabindex="-1" role="dialog" aria-labelledby="checkModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">查看</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <input type="hidden" id="suite-view-uuid" value=""/>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="suite-view-ref">来源</label>
+                                <div class="col-sm-10">
+                                    <select id="suite-view-ref" class="form-control">
+                                        <option value="">无</option>
+                                        <option value="yy">YY</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="suite-view-link">链接</label>
+                                <div id="suite-view-link" class="col-sm-10">
+                                    <a>无</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!--开始弹出框-->
+    <div class="modal fade" id="start-modal" tabindex="-1" role="dialog" aria-labelledby="startModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="startModalLabel">开始任务</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form-suite-start" class="form-start" action="/management/start_suite">
+                        {% csrf_token %}
+                        <input id="start-suite-id" type="hidden" name="suite_id">
+                        <div class="form-group">
+                            <label for="suite-start-time">开始日期</label>
+                            <div class="input-group input-group-date date" id="datetimepicker-start-time" data-date-format="yyyy-mm-dd" data-min-view="month" data-date-autoclose="true">
+                                <input type="text" class="form-control"  id="suite-start-date" name="start_date" placeholder="开始日期" autocomplete="off" />
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="suite-end-time">结束日期</label>
+                            <div class="input-group input-group-date date" id="datetimepicker-end-time" data-date-format="yyyy-mm-dd" data-min-view="month" data-date-autoclose="true">
+                                <input type="text" class="form-control" id="suite-end-date" name="end_date" placeholder="结束日期" autocomplete="off" />
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="suite-group-count">测试轮数</label>
+                            <input type="number" class="form-control" id="suite-case-count" name="case_count" placeholder="测试轮数" autocomplete="off" />
+                            <div class="help-block">如果不填,将自动获取第一个Group的Case数</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-suite-start" type="submit" class="btn btn-primary">开始</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bodyjs %}
+    <!-- 保存render数据，在外部js中使用 -->
+    <script type="text/javascript">
+        var data = {
+            'paginator': {{ paginator|safe }}
+        };
+    </script>
+    <script type="text/javascript"
+            src="{% static 'jq-paginator/js/jqPaginator.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'jquery-query-object/js/jquery.query-object.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'medusa/js/management/suiteIndex.js' %}"></script>
+
+{% endblock %}
